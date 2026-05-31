@@ -341,6 +341,259 @@
 
   footer a { color: var(--gold); text-decoration: none; }
 
+  /* ─── QRIS MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(44,26,26,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal-box {
+    background: var(--white);
+    border-radius: 28px;
+    padding: 32px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(44,26,26,0.25);
+    animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+  }
+
+  @keyframes modalIn {
+    from { transform: scale(0.85) translateY(20px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 18px;
+    background: none; border: none;
+    font-size: 1.4rem; cursor: pointer;
+    color: var(--text); opacity: 0.4;
+    transition: opacity 0.2s;
+    line-height: 1;
+  }
+  .modal-close:hover { opacity: 1; }
+
+  .modal-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--pink-light), rgba(201,168,76,0.1));
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  .modal-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--dark);
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .modal-box p {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.75;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .qris-frame, .qris-placeholder, .qris-name, .qris-bank { display: none; }
+
+  /* ─── WARNA BUNGA ─── */
+  .color-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .color-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border: 1.5px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    background: rgba(252,228,236,0.1);
+    user-select: none;
+  }
+
+  .color-opt:hover {
+    border-color: var(--gold);
+    background: rgba(252,228,236,0.25);
+    transform: translateY(-1px);
+  }
+
+  .color-opt input[type="radio"] { display: none; }
+
+  .color-opt.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  }
+
+  .color-circle {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    border: 2px solid rgba(255,255,255,0.6);
+  }
+
+  .color-text {
+    font-size: 0.92rem;
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .color-opt.selected .color-text { color: var(--dark); font-weight: 600; }
+
+  /* ─── BANK CARDS ─── */
+  .bank-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(252,228,236,0.2);
+    border: 1.5px solid rgba(201,168,76,0.25);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+  }
+
+  .bank-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201,168,76,0.15);
+  }
+
+  .bank-card.copied {
+    border-color: #25d366;
+    background: rgba(37,211,102,0.08);
+  }
+
+  .bank-logo {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .bank-logo.seabank { background: linear-gradient(135deg, #1a73e8, #0d47a1); }
+  .bank-logo.dana    { background: linear-gradient(135deg, #118eda, #0766c0); }
+
+  .bank-info { flex: 1; text-align: left; }
+
+  .bank-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .bank-number {
+    font-size: 1.05rem;
+    color: var(--gold);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .bank-holder {
+    font-size: 0.8rem;
+    color: var(--text);
+    opacity: 0.65;
+  }
+
+  .copy-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .copy-icon { font-size: 1.1rem; }
+  .copy-label { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); }
+
+  .modal-steps {
+    text-align: left;
+    background: rgba(252,228,236,0.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .modal-steps li {
+    list-style: none;
+    padding-left: 4px;
+  }
+
+  .modal-steps li::before {
+    content: attr(data-num);
+    display: inline-block;
+    width: 22px; height: 22px;
+    background: var(--gold);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.72rem;
+    text-align: center;
+    line-height: 22px;
+    margin-right: 8px;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .btn-wa-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-wa-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(37,211,102,0.4);
+  }
+
+  .btn-wa-confirm svg { width: 20px; height: 20px; fill: white; flex-shrink: 0; }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 520px) {
     .form-row { grid-template-columns: 1fr; }
@@ -496,6 +749,32 @@
     </div>
 
     <div class="form-group">
+      <label>Warna Bunga <span class="req">*</span></label>
+      <div class="color-options">
+        <label class="color-opt" data-color="pink">
+          <input type="radio" name="warna_bunga" value="Pink 🌸">
+          <span class="color-circle" style="background:linear-gradient(135deg,#f9a8c9,#f472b6);"></span>
+          <span class="color-text">Pink</span>
+        </label>
+        <label class="color-opt" data-color="coklat">
+          <input type="radio" name="warna_bunga" value="Coklat/Cream 🤎">
+          <span class="color-circle" style="background:linear-gradient(135deg,#c8a882,#e8d5b0);"></span>
+          <span class="color-text">Coklat / Cream</span>
+        </label>
+        <label class="color-opt" data-color="biru">
+          <input type="radio" name="warna_bunga" value="Biru 💙">
+          <span class="color-circle" style="background:linear-gradient(135deg,#60a5fa,#93c5fd);"></span>
+          <span class="color-text">Biru</span>
+        </label>
+        <label class="color-opt" data-color="merah">
+          <input type="radio" name="warna_bunga" value="Merah ❤️">
+          <span class="color-circle" style="background:linear-gradient(135deg,#f87171,#dc2626);"></span>
+          <span class="color-text">Merah</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label>Lokasi Acara <span class="req">*</span></label>
       <input type="text" id="lokasi" placeholder="Nama kampus / gedung / alamat lengkap">
     </div>
@@ -541,6 +820,58 @@
   </div>
 </div>
 
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="qrisModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div class="modal-step">✦ Langkah 2 dari 2</div>
+    <h3>Informasi Pembayaran</h3>
+    <p>Silakan transfer ke salah satu rekening berikut, lalu kirim bukti ke admin.</p>
+
+    <!-- SeaBank -->
+    <div class="bank-card" onclick="copyText('901335307677', this)">
+      <div class="bank-logo seabank">🌊</div>
+      <div class="bank-info">
+        <div class="bank-name">SeaBank</div>
+        <div class="bank-number">901335307677</div>
+        <div class="bank-holder">a.n <strong>Saifullah</strong></div>
+      </div>
+      <div class="copy-btn">
+        <span class="copy-icon">📋</span>
+        <span class="copy-label">Salin</span>
+      </div>
+    </div>
+
+    <!-- DANA -->
+    <div class="bank-card" onclick="copyText('085747480993', this)">
+      <div class="bank-logo dana">💙</div>
+      <div class="bank-info">
+        <div class="bank-name">DANA</div>
+        <div class="bank-number">085747480993</div>
+        <div class="bank-holder">a.n <strong>Saifullah</strong></div>
+      </div>
+      <div class="copy-btn">
+        <span class="copy-icon">📋</span>
+        <span class="copy-label">Salin</span>
+      </div>
+    </div>
+
+    <ul class="modal-steps">
+      <li data-num="1">Pilih metode pembayaran di atas</li>
+      <li data-num="2">Transfer sesuai nominal yang disepakati</li>
+      <li data-num="3">Klik tombol di bawah & kirim <strong>bukti transfer</strong> ke admin</li>
+    </ul>
+
+    <a href="#" class="btn-wa-confirm" id="btnConfirmWA">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Sudah Transfer — Kirim Bukti ke Admin
+    </a>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <p>© 2025 <strong>Velora.id</strong> — Beauty Reflections</p>
@@ -552,14 +883,22 @@
 </footer>
 
 <script>
-  // Load actual uploaded images
-  const images = [
-    { el: document.querySelectorAll('.gallery-item')[0].querySelector('img'), src: 'foto1.jpeg' },
-    { el: document.querySelectorAll('.gallery-item')[1].querySelector('img'), src: 'foto2.jpeg' },
-    { el: document.querySelectorAll('.gallery-item')[2].querySelector('img'), src: 'foto3.jpeg' },
-    { el: document.querySelectorAll('.gallery-item')[3].querySelector('img'), src: 'foto4.jpeg' },
-    { el: document.querySelectorAll('.gallery-item')[4].querySelector('img'), src: 'foto5.jpeg' },
-  ];
+  let waUrl = '';
+
+  function copyText(text, cardEl) {
+    navigator.clipboard.writeText(text).then(() => {
+      cardEl.classList.add('copied');
+      const label = cardEl.querySelector('.copy-label');
+      const icon = cardEl.querySelector('.copy-icon');
+      label.textContent = 'Tersalin!';
+      icon.textContent = '✅';
+      setTimeout(() => {
+        cardEl.classList.remove('copied');
+        label.textContent = 'Salin';
+        icon.textContent = '📋';
+      }, 2000);
+    });
+  }
 
   function sendToWA(e) {
     e.preventDefault();
@@ -574,16 +913,18 @@
     const ucapan = document.getElementById('ucapan').value.trim();
     const catatan = document.getElementById('catatan').value.trim();
 
-    if (!nama || !hp || !identitas || !tanggal || !jam || !durasi || !lokasi || !acara || !ucapan) {
-      alert('Mohon lengkapi semua kolom yang bertanda *');
+    const warnaEl = document.querySelector('input[name="warna_bunga"]:checked');
+    const warna = warnaEl ? warnaEl.value : '';
+
+    if (!nama || !hp || !identitas || !tanggal || !jam || !durasi || !warna || !lokasi || !acara || !ucapan) {
+      alert('Mohon lengkapi semua kolom yang bertanda *\n(termasuk pilih warna bunga)');
       return;
     }
 
-    // Format tanggal Indonesia
     const tgl = new Date(tanggal);
     const tglStr = tgl.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-    const msg = 
+    const msg =
 `🌸 *PEMESANAN VELORA.ID* 🌸
 
 *Nama Penyewa:* ${nama}
@@ -593,6 +934,7 @@
 📅 *Tanggal Sewa:* ${tglStr}
 ⏰ *Jam:* ${jam}
 ⏳ *Durasi:* ${durasi}
+🌸 *Warna Bunga:* ${warna}
 📍 *Lokasi:* ${lokasi}
 🎉 *Kebutuhan Acara:* ${acara}
 
@@ -600,11 +942,42 @@
 ${ucapan}
 ${catatan ? `\n📝 *Catatan:* ${catatan}` : ''}
 
+💳 *Pembayaran:* Transfer (bukti terlampir) ✅
+
 _Dikirim via velora.id_`;
 
-    const url = `https://wa.me/6285717835248?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
+    waUrl = `https://wa.me/6285717835248?text=${encodeURIComponent(msg)}`;
+
+    // Tampilkan modal QRIS dulu
+    document.getElementById('qrisModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
   }
+
+  function closeModal() {
+    document.getElementById('qrisModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Warna bunga selection highlight
+  document.querySelectorAll('.color-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+    });
+  });
+
+  // Klik di luar modal = tutup
+  document.getElementById('qrisModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Tombol konfirmasi → buka WA
+  document.getElementById('btnConfirmWA').addEventListener('click', function(e) {
+    e.preventDefault();
+    closeModal();
+    if (waUrl) window.open(waUrl, '_blank');
+  });
 </script>
 </body>
 </html>
