@@ -594,6 +594,83 @@
 
   .btn-wa-confirm svg { width: 20px; height: 20px; fill: white; flex-shrink: 0; }
 
+  /* ─── HARGA DISPLAY ─── */
+  .harga-display {
+    background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(244,167,185,0.1));
+    border: 1.5px solid rgba(201,168,76,0.45);
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .harga-display::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(201,168,76,0.03) 10px,
+      rgba(201,168,76,0.03) 20px
+    );
+    pointer-events: none;
+  }
+
+  .harga-display.show {
+    display: flex;
+    animation: fadeInUp 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .harga-left { flex: 1; }
+
+  .harga-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(201,168,76,0.15);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 6px;
+  }
+
+  .harga-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    color: var(--dark);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .harga-note {
+    font-size: 0.78rem;
+    color: var(--text);
+    opacity: 0.65;
+    margin-top: 3px;
+  }
+
+  .harga-icon {
+    font-size: 2.2rem;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 6px rgba(201,168,76,0.3));
+  }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 520px) {
     .form-row { grid-template-columns: 1fr; }
@@ -781,7 +858,7 @@
 
     <div class="form-group">
       <label>Kebutuhan Acara <span class="req">*</span></label>
-      <select id="acara">
+      <select id="acara" onchange="updateHarga()">
         <option value="">— Pilih kebutuhan —</option>
         <option>Sidang / Ujian Skripsi</option>
         <option>Wisuda</option>
@@ -790,6 +867,25 @@
         <option>Ulang Tahun</option>
         <option>Lainnya</option>
       </select>
+    </div>
+
+    <div class="form-group">
+      <label>Jenis Papan <span class="req">*</span></label>
+      <select id="papan" onchange="updateHarga()">
+        <option value="">— Pilih jenis papan —</option>
+        <option value="Papan Ucapan Bulat">Papan Ucapan Bulat</option>
+        <option value="Convex">Convex</option>
+        <option value="Papan Ucapan Kubah">Papan Ucapan Kubah</option>
+      </select>
+    </div>
+
+    <div class="harga-display" id="hargaDisplay">
+      <div class="harga-left">
+        <div class="harga-badge">✦ Harga</div>
+        <div class="harga-amount" id="hargaAmount">Rp 0</div>
+        <div class="harga-note" id="hargaDetail">—</div>
+      </div>
+      <div class="harga-icon">🏷️</div>
     </div>
 
     <div class="form-group">
@@ -885,6 +981,51 @@
 <script>
   let waUrl = '';
 
+  /* ─── HARGA MATRIX ─── */
+  const hargaMatrix = {
+    'Sidang / Ujian Skripsi': {
+      'Papan Ucapan Bulat': 60000,
+      'Convex':             85000,
+      'Papan Ucapan Kubah': 55000
+    },
+    'Wedding / Pernikahan': {
+      'Papan Ucapan Bulat': 65000,
+      'Convex':             100000,
+      'Papan Ucapan Kubah': 60000
+    },
+    'Lamaran': {
+      'Papan Ucapan Bulat': 65000,
+      'Convex':             100000,
+      'Papan Ucapan Kubah': 55000
+    },
+    'Ulang Tahun': {
+      'Papan Ucapan Bulat': 65000,
+      'Convex':             100000,
+      'Papan Ucapan Kubah': 55000
+    }
+  };
+
+  function formatRupiah(nominal) {
+    return 'Rp ' + nominal.toLocaleString('id-ID');
+  }
+
+  function updateHarga() {
+    const acara = document.getElementById('acara').value;
+    const papan = document.getElementById('papan').value;
+    const display = document.getElementById('hargaDisplay');
+    const amountEl = document.getElementById('hargaAmount');
+    const detailEl = document.getElementById('hargaDetail');
+
+    if (acara && papan && hargaMatrix[acara] && hargaMatrix[acara][papan] !== undefined) {
+      const nominal = hargaMatrix[acara][papan];
+      amountEl.textContent = formatRupiah(nominal);
+      detailEl.textContent = papan + ' · ' + acara;
+      display.classList.add('show');
+    } else {
+      display.classList.remove('show');
+    }
+  }
+
   function copyText(text, cardEl) {
     navigator.clipboard.writeText(text).then(() => {
       cardEl.classList.add('copied');
@@ -902,27 +1043,33 @@
 
   function sendToWA(e) {
     e.preventDefault();
-    const nama = document.getElementById('nama').value.trim();
-    const hp = document.getElementById('hp').value.trim();
+    const nama     = document.getElementById('nama').value.trim();
+    const hp       = document.getElementById('hp').value.trim();
     const identitas = document.getElementById('identitas').value;
-    const tanggal = document.getElementById('tanggal').value;
-    const jam = document.getElementById('jam').value;
-    const durasi = document.getElementById('durasi').value;
-    const lokasi = document.getElementById('lokasi').value.trim();
-    const acara = document.getElementById('acara').value;
-    const ucapan = document.getElementById('ucapan').value.trim();
-    const catatan = document.getElementById('catatan').value.trim();
+    const tanggal  = document.getElementById('tanggal').value;
+    const jam      = document.getElementById('jam').value;
+    const durasi   = document.getElementById('durasi').value;
+    const lokasi   = document.getElementById('lokasi').value.trim();
+    const acara    = document.getElementById('acara').value;
+    const papan    = document.getElementById('papan').value;
+    const ucapan   = document.getElementById('ucapan').value.trim();
+    const catatan  = document.getElementById('catatan').value.trim();
 
     const warnaEl = document.querySelector('input[name="warna_bunga"]:checked');
-    const warna = warnaEl ? warnaEl.value : '';
+    const warna   = warnaEl ? warnaEl.value : '';
 
-    if (!nama || !hp || !identitas || !tanggal || !jam || !durasi || !warna || !lokasi || !acara || !ucapan) {
-      alert('Mohon lengkapi semua kolom yang bertanda *\n(termasuk pilih warna bunga)');
+    if (!nama || !hp || !identitas || !tanggal || !jam || !durasi || !warna || !lokasi || !acara || !papan || !ucapan) {
+      alert('Mohon lengkapi semua kolom yang bertanda *\n(termasuk warna bunga dan jenis papan)');
       return;
     }
 
     const tgl = new Date(tanggal);
     const tglStr = tgl.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    const display = document.getElementById('hargaDisplay');
+    const hargaText = display.classList.contains('show')
+      ? document.getElementById('hargaAmount').textContent
+      : 'Konfirmasi dengan admin';
 
     const msg =
 `🌸 *PEMESANAN VELORA.ID* 🌸
@@ -937,6 +1084,8 @@
 🌸 *Warna Bunga:* ${warna}
 📍 *Lokasi:* ${lokasi}
 🎉 *Kebutuhan Acara:* ${acara}
+📋 *Jenis Papan:* ${papan}
+💰 *Harga:* ${hargaText}
 
 ✍️ *UCAPAN:*
 ${ucapan}
@@ -948,7 +1097,7 @@ _Dikirim via velora.id_`;
 
     waUrl = `https://wa.me/6285717835248?text=${encodeURIComponent(msg)}`;
 
-    // Tampilkan modal QRIS dulu
+    // Tampilkan modal pembayaran
     document.getElementById('qrisModal').classList.add('active');
     document.body.style.overflow = 'hidden';
   }
